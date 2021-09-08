@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>農村地方美食小吃特色料理</title>
+  <link rel="stylesheet" href="./style/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <header class="header container mx-auto">
+    <h1 class="header__tit">農村地方美食小吃特色料理</h1>
+  </header>
+  <div class="content container mx-auto">
+    <main class="main">
+      <nav class="nav">
+        <div class="nav__head">
+          <div class="nav__select">
+            <select class="nav__ls" id="City">
+              <option class="nav__item" selected disabled>請選擇行政區域...</option>
+            </select>
+          </div>
+          <div class="nav__select">
+            <select class="nav__ls" id="Town">
+              <option class="nav__item" value="allTown" selected disabled>請選擇鄉鎮區...</option>
+            </select>
+          </div>
+        </div>
+        <div class="nav__body">
+          <span class="nav__tit">檢視模式：</span>
+          <button class="nav__btn js-nav__btn">
+            <i class="fas fa-th-list"></i>
+          </button>
+          <button class="nav__btn">
+            <i class="fas fa-align-justify"></i>
+          </button>
+          <button class="nav__btn">
+            <i class="fas fa-th-large"></i>
+          </button>
+        </div>
+      </nav>
+      <article class="article" id="List"></article>
+      <div class="page">
+        <div class="page__info" id="PageNum"></div>
+        <div class="page__btn" id="Page"></div>
+      </div>
+    </main>
+    <aside class="aside">
+      <div class="aside__img">
+        <img class="image" src="./image/adv1.png" alt="">
+      </div>
+      <div class="aside__img">
+        <img class="image" src="./image/adv2.png" alt="">
+      </div>
+      <div class="aside__img aside__img--fix">
+        <img class="image" src="./image/adv3.png" alt="">
+      </div>
+    </aside>
+  </div>
+  <footer class="footer">
+    <div class="footer__sec container mx-auto">
+      <p class="footer__tit"> CMoney 全曜財經資訊</p>
+      <div class="footer__desc">
+        <span class="footer__info">資料來源：</span>
+        <a href="https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvTravelFood.aspx">政府資料開放平台</a>
+      </div>
+    </div>
+  </footer>
+  <script src="./js/index.js"></script>
+</body>
+
+</html>
