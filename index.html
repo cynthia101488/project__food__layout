@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="icon" href="./favicon.ico" type="image/x-ico" sizes="16x16">
 </head>
 
 <body>
@@ -33,21 +34,40 @@
         </div>
         <div class="nav__body">
           <span class="nav__tit">檢視模式：</span>
-          <button class="nav__btn js-nav__btn">
-            <i class="fas fa-th-list"></i>
-          </button>
-          <button class="nav__btn">
-            <i class="fas fa-align-justify"></i>
-          </button>
-          <button class="nav__btn">
-            <i class="fas fa-th-large"></i>
-          </button>
+          <div class="nav__footer" id="Mode">
+            <button class="nav__btn js-nav__btn">
+              <i class="fas fa-th-list" data-id="0"></i>
+            </button>
+            <button class="nav__btn">
+              <i class="fas fa-align-justify" data-id="1"></i>
+            </button>
+            <button class="nav__btn">
+              <i class="fas fa-th-large" data-id="2"></i>
+            </button>
+          </div>
         </div>
       </nav>
       <article class="article" id="List"></article>
+      <article class="table" id="TableBox">
+        <table class="table__sec">
+          <thead class="table__head">
+            <tr class="table__ls">
+              <th class="table__tit table-col1">編號</th>
+              <th class="table__tit table-col2">行政區域</th>
+              <th class="table__tit table-col3">鄉鎮區</th>
+              <th class="table__tit">商家</th>
+              <th class="table__tit table-col4">地址</th>
+            </tr>
+          </thead>
+          <tbody class="table__body" id="Table"></tbody>
+        </table>
+      </article>
+      <article class="card" id="CardBox">
+        <div class="card__main row" id="Card"></div>
+      </article>
       <div class="page">
         <div class="page__info" id="PageNum"></div>
-        <div class="page__btn" id="Page"></div>
+        <div class="page__body" id="Page"></div>
       </div>
     </main>
     <aside class="aside">
