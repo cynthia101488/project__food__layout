@@ -1,7 +1,13 @@
 const elemMode = document.querySelector('#Mode');
 const elemPage = document.querySelector('#Page');
+const elemCityList = document.querySelector('#City');
+const elemTownList = document.querySelector('#Town');
 let pageArr = [];
 let currentIndex = 0;
+let placeList = [];
+let cityArr = [];
+let currentCity = -1;
+let currentTown = '';
 let mode = 0;
 const dataSize = 10;
 
@@ -13,26 +19,71 @@ function getData() {
   fetch(api)
     .then(res => res.json())
     .then(data => {
-      pageArr = pageSplit(data);
-      setPage(pageArr);
+      pageSplit(data);
+      dataFilter(data);
+      cityArr = dataSplit(data);
       setTemplate(currentIndex, mode);
     })
 }
 
 function pageSplit(data) {
+  pageArr = [];
   for (let i = 0, len = data.length; i < len; i += dataSize) {
     pageArr.push(data.slice(i, i + dataSize));
   }
-  return pageArr;
+  setPage(pageArr);
 }
 
 function setPage(arr) {
+  currentIndex = 0;
   let str = '';
   arr.forEach((item, index) => {
     str += `<button class="page__btn" type="button" data-id="${index}">${index + 1}</button>`;
   });
   elemPage.innerHTML = str;
   elemPage.children[currentIndex].classList.add('js-page__btn');
+}
+
+function dataFilter(data) {
+  const allPlace = getZone(data)
+  placeList = allPlace.filter((item, index) => allPlace.indexOf(item) === index);
+  setSelectList(placeList);
+}
+
+function getZone(data) {
+  const arr = data.map(item => {
+    if (currentCity < 0) {
+      return item.City;
+    } else {
+      return item.Town;
+    }
+  });
+  return arr;
+}
+
+function setSelectList(arr) {
+  let str = '';
+  arr.forEach((item, index) => {
+    str += `<option class="nav__item" value="${item}" data-id="${index}">${item}</option>`
+  });
+  if (currentCity < 0) {
+    elemCityList.innerHTML += str;
+  } else {
+    elemTownList.innerHTML = `<option class="nav__item" value="allTown" selected disabled>請選擇鄉鎮區...</option>` + str;
+  }
+}
+
+function dataSplit(data) {
+  placeList.forEach(item => {
+    let arr = [];
+    data.forEach(elem => {
+      if (elem.City === item) {
+        arr.push(elem);
+      }
+    });
+    cityArr.push(arr);
+  });
+  return cityArr;
 }
 
 function setTemplate(index, type) {
@@ -136,8 +187,26 @@ function changeBgColor(index) {
 }
 
 function setEvent() {
-  elemMode.addEventListener('click', changeMode, true)
+  elemMode.addEventListener('click', changeMode);
   elemPage.addEventListener('click', changePage);
+  elemCityList.addEventListener('change', function () {
+    currentCity = elemCityList.selectedIndex - 1;
+    pageSplit(cityArr[currentCity]);
+    setTemplate(currentIndex, mode);
+    dataFilter(cityArr[currentCity]);
+  });
+
+  elemTownList.addEventListener('change', function () {
+    currentTown = elemTownList.value;
+    let arr = [];
+    cityArr[currentCity].forEach(item => {
+      if (item.Town === currentTown) {
+        arr.push(item);
+      }
+    });
+    pageSplit(arr);
+    setTemplate(currentIndex, mode);
+  });
 }
 
 function changeMode(e) {
@@ -146,7 +215,7 @@ function changeMode(e) {
     const prevMode = mode;
     mode = parseInt(self.dataset.id);
     setTemplate(currentIndex, mode);
-    setModeBtn(prevMode)
+    setModeBtn(prevMode);
   }
 }
 
