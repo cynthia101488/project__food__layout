@@ -2,8 +2,8 @@ const elemMode = document.querySelector('#Mode');
 const elemPage = document.querySelector('#Page');
 let pageArr = [];
 let currentIndex = 0;
-const dataSize = 10;
 let mode = 0;
+const dataSize = 10;
 
 getData();
 setEvent();
@@ -49,23 +49,23 @@ function setTemplate(index, type) {
       elemTableBox.style = 'display: none';
       elemCardBox.style = 'display: none';
       pageArr[index].forEach(item => {
-        str += `<div class="article__sec">
-                  ${item.Url ? `<a class="article__link" href="${item.Url}" target="_blank">` : ''}
-                    <div class="article__content">
+        str += `<div class="list__sec">
+                  ${item.Url ? `<a class="list__link" href="${item.Url}" target="_blank">` : ''}
+                    <div class="list__content">
                       <div class="img__inner">
                         <img class="image" src="${item.PicURL}" alt="${item.Name}">
                       </div>
-                      <div class="article__info">
-                        <div class="article__head">
-                          <h2 class="article__tit">${item.Name}</h2>
+                      <div class="list__info">
+                        <div class="list__head">
+                          <h2 class="list__tit">${item.Name}</h2>
                         </div>
-                        <div class="article__body">
-                          <p class="article__desc">${textLimit(item.HostWords)}</p>
+                        <div class="list__footer">
+                          <h3 class="list__tag">${item.City}</h3>
+                          <h4 class="list__name">${item.Town}</h4>
                         </div>
-                      </div>
-                      <div class="article__footer">
-                        <h3 class="article__tag">${item.City}</h3>
-                        <h4 class="article__name">${item.Town}</h4>
+                        <div class="list__body">
+                          <p class="list__desc">${textLimit(item.HostWords)}</p>
+                        </div>
                       </div>
                     </div>
                   ${item.Url ? `</a>` : ''}
@@ -109,7 +109,7 @@ function setTemplate(index, type) {
                       <h2 class="card__tit">${item.Name}</h2>
                     </div>
                     <div class="card__footer">
-                      <p class="card__desc">${textLimit(item.HostWords)}</p>
+                      <p class="card__desc">${item.HostWords}</p>
                     </div>
                   </div>
                 </div>
@@ -124,7 +124,11 @@ function setTemplate(index, type) {
 
 function textLimit(text) {
   let len = text.length;
-  return len > 100 ? text.substring(0, 100) + '...' : text;
+  if (screen.width <= 414) {
+    return len > 40 ? text.substring(0, 40) + '...' : text;
+  } else {
+    return len > 100 ? text.substring(0, 100) + '...' : text;
+  }
 }
 
 function changeBgColor(index) {
@@ -138,7 +142,6 @@ function setEvent() {
 
 function changeMode(e) {
   const self = e.target;
-  console.log(e);
   if (self.nodeName === 'I') {
     const prevMode = mode;
     mode = parseInt(self.dataset.id);
