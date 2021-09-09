@@ -2,6 +2,7 @@ const elemMode = document.querySelector('#Mode');
 const elemPage = document.querySelector('#Page');
 const elemCityList = document.querySelector('#City');
 const elemTownList = document.querySelector('#Town');
+const elemLoad = document.querySelector('#Load');
 let pageArr = [];
 let currentIndex = 0;
 let placeList = [];
@@ -24,6 +25,14 @@ function getData() {
       cityArr = dataSplit(data);
       setTemplate(currentIndex, mode);
     })
+    .catch(err => {
+      if (err) {
+        alert('資料來源有誤！')
+      }
+    })
+    .finally(() => {
+      elemLoad.style = 'display: none';
+    });
 }
 
 function pageSplit(data) {
@@ -104,7 +113,7 @@ function setTemplate(index, type) {
                   ${item.Url ? `<a class="list__link" href="${item.Url}" target="_blank">` : ''}
                     <div class="list__content">
                       <div class="img__inner">
-                        <img class="image" src="${item.PicURL}" alt="${item.Name}">
+                        <img class="image" src="${item.PicURL}" alt="${item.Name}" loading="lazy">
                       </div>
                       <div class="list__info">
                         <div class="list__head">
@@ -135,7 +144,12 @@ function setTemplate(index, type) {
                   <td class="table__item text-gray">${item.City}</td>
                   <td class="table__item text-gray">${item.Town}</td>
                   <td class="table__item">${item.Url ? `<a href="${item.Url}" target="_blank">${item.Name}</a>` : `${item.Name}`}</td>
-                  <td class="table__item text-overflow" title="${item.Address}">${item.Address}</td>
+                  <td class="table__item">
+                    <div class="table__desc">
+                      <p class="table__info text-overflow">${item.Address}</p>
+                      <p class="table__hidden">${item.Address}</p>
+                    </div>
+                  </td>
                 </tr>`;
       });
       elemTable.innerHTML = str;
@@ -149,7 +163,7 @@ function setTemplate(index, type) {
               ${item.Url ? `<a class="card__link" href="${item.Url}" target="_blank">` : ''}
                 <div class="card__content">
                   <div class="img__inner">
-                    <img class="image" src="${item.PicURL}" alt="${item.Name}">
+                    <img class="image" src="${item.PicURL}" alt="${item.Name}" loading="lazy">
                   </div>
                   <div class="card__info">
                     <div class="card__head">
@@ -189,24 +203,8 @@ function changeBgColor(index) {
 function setEvent() {
   elemMode.addEventListener('click', changeMode);
   elemPage.addEventListener('click', changePage);
-  elemCityList.addEventListener('change', function () {
-    currentCity = elemCityList.selectedIndex - 1;
-    pageSplit(cityArr[currentCity]);
-    setTemplate(currentIndex, mode);
-    dataFilter(cityArr[currentCity]);
-  });
-
-  elemTownList.addEventListener('change', function () {
-    currentTown = elemTownList.value;
-    let arr = [];
-    cityArr[currentCity].forEach(item => {
-      if (item.Town === currentTown) {
-        arr.push(item);
-      }
-    });
-    pageSplit(arr);
-    setTemplate(currentIndex, mode);
-  });
+  elemCityList.addEventListener('change', changeCity);
+  elemTownList.addEventListener('change', changeTown);
 }
 
 function changeMode(e) {
@@ -237,4 +235,23 @@ function changePage(e) {
 function setPageBtn(index) {
   elemPage.children[currentIndex].classList.add('js-page__btn');
   elemPage.children[index].classList.remove('js-page__btn');
+}
+
+function changeCity() {
+  currentCity = elemCityList.selectedIndex - 1;
+  pageSplit(cityArr[currentCity]);
+  setTemplate(currentIndex, mode);
+  dataFilter(cityArr[currentCity]);
+}
+
+function changeTown() {
+  currentTown = elemTownList.value;
+  let arr = [];
+  cityArr[currentCity].forEach(item => {
+    if (item.Town === currentTown) {
+      arr.push(item);
+    }
+  });
+  pageSplit(arr);
+  setTemplate(currentIndex, mode);
 }
