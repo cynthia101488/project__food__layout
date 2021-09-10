@@ -4,12 +4,15 @@ const elemCityList = document.querySelector('#City');
 const elemTownList = document.querySelector('#Town');
 const elemLoad = document.querySelector('#Load');
 let pageArr = [];
-let currentIndex = 0;
-let placeList = [];
 let cityArr = [];
+let placeList = [];
+let currentIndex = 0;
 let currentCity = -1;
 let currentTown = '';
 let mode = 0;
+let renderList = false;
+let renderTable = false;
+let renderCard = false;
 const dataSize = 10;
 
 getData();
@@ -108,8 +111,9 @@ function setTemplate(index, type) {
       elemList.style = 'display: block';
       elemTable.style = 'display: none';
       elemCard.style = 'display: none';
-      pageArr[index].forEach(item => {
-        str += `<div class="list__sec">
+      if (!renderList) {
+        pageArr[index].forEach(item => {
+          str += `<div class="list__sec">
                   ${item.Url ? `<a class="list__link" href="${item.Url}" target="_blank">` : ''}
                     <div class="list__content">
                       <div class="img__inner">
@@ -130,16 +134,19 @@ function setTemplate(index, type) {
                     </div>
                   ${item.Url ? `</a>` : ''}
                 </div>`
-      });
-      elemList.innerHTML = str;
+        });
+        elemList.innerHTML = str;
+        renderList = true;
+      }
       break;
     case 1:
       elemTable.style = 'display: block';
       elemList.style = 'display: none';
       elemCard.style = 'display: none';
-      const rowStartIndex = index * dataSize + 1;
-      pageArr[index].forEach((item, i) => {
-        str += `<tr class="table__ls ${changeBgColor(i)}">
+      if (!renderTable) {
+        const rowStartIndex = index * dataSize + 1;
+        pageArr[index].forEach((item, i) => {
+          str += `<tr class="table__ls ${changeBgColor(i)}">
                   <td class="table__item text-right text-gray">${rowStartIndex + i}</td>
                   <td class="table__item text-gray">${item.City}</td>
                   <td class="table__item text-gray">${item.Town}</td>
@@ -151,15 +158,18 @@ function setTemplate(index, type) {
                     </div>
                   </td>
                 </tr>`;
-      });
-      elemTableIn.innerHTML = str;
+        });
+        elemTableIn.innerHTML = str;
+        renderTable = true;
+      }
       break;
     default:
       elemCard.style = 'display: block';
       elemList.style = 'display: none';
       elemTable.style = 'display: none';
-      pageArr[index].forEach(item => {
-        str += `<div class="card__sec">
+      if (!renderCard) {
+        pageArr[index].forEach(item => {
+          str += `<div class="card__sec">
               ${item.Url ? `<a class="card__link" href="${item.Url}" target="_blank">` : ''}
                 <div class="card__content">
                   <div class="img__inner">
@@ -180,11 +190,13 @@ function setTemplate(index, type) {
                 </div>
               ${item.Url ? `</a>` : ''}
             </div>`
-      });
-      elemCardIn.innerHTML = str;
+        });
+        elemCardIn.innerHTML = str;
+        renderCard = true;
+      }
       break;
   }
-  elemPageNum.textContent = `美食頁次 ${index + 1}/14`;
+  elemPageNum.textContent = `美食頁次 ${index + 1}/${pageArr.length}`;
 }
 
 function textLimit(text) {
@@ -217,29 +229,21 @@ function changeMode(e) {
   }
 }
 
-function setModeBtn(index) {
-  elemMode.children[mode].classList.add('js-nav__btn');
-  elemMode.children[index].classList.remove('js-nav__btn');
-}
-
 function changePage(e) {
   const self = e.target;
   if (self.nodeName === 'BUTTON') {
     const prevIndex = currentIndex;
     currentIndex = parseInt(self.dataset.id);
+    renderStateChange();
     setTemplate(currentIndex, mode);
     setPageBtn(prevIndex);
   }
 }
 
-function setPageBtn(index) {
-  elemPage.children[currentIndex].classList.add('js-page__btn');
-  elemPage.children[index].classList.remove('js-page__btn');
-}
-
 function changeCity() {
   currentCity = elemCityList.selectedIndex - 1;
   pageSplit(cityArr[currentCity]);
+  renderStateChange();
   setTemplate(currentIndex, mode);
   dataFilter(cityArr[currentCity]);
 }
@@ -253,5 +257,22 @@ function changeTown() {
     }
   });
   pageSplit(arr);
+  renderStateChange();
   setTemplate(currentIndex, mode);
+}
+
+function setModeBtn(index) {
+  elemMode.children[mode].classList.add('js-nav__btn');
+  elemMode.children[index].classList.remove('js-nav__btn');
+}
+
+function setPageBtn(index) {
+  elemPage.children[currentIndex].classList.add('js-page__btn');
+  elemPage.children[index].classList.remove('js-page__btn');
+}
+
+function renderStateChange() {
+  renderList = false;
+  renderTable = false;
+  renderCard = false;
 }
