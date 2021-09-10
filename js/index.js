@@ -98,16 +98,16 @@ function dataSplit(data) {
 function setTemplate(index, type) {
   const elemList = document.querySelector('#List');
   const elemTable = document.querySelector('#Table');
-  const elemTableBox = document.querySelector('#TableBox');
+  const elemTableIn = document.querySelector('#TableIn');
   const elemCard = document.querySelector('#Card');
-  const elemCardBox = document.querySelector('#CardBox');
+  const elemCardIn = document.querySelector('#CardIn');
   const elemPageNum = document.querySelector('#PageNum');
   let str = '';
   switch (type) {
     case 0:
       elemList.style = 'display: block';
-      elemTableBox.style = 'display: none';
-      elemCardBox.style = 'display: none';
+      elemTable.style = 'display: none';
+      elemCard.style = 'display: none';
       pageArr[index].forEach(item => {
         str += `<div class="list__sec">
                   ${item.Url ? `<a class="list__link" href="${item.Url}" target="_blank">` : ''}
@@ -134,9 +134,9 @@ function setTemplate(index, type) {
       elemList.innerHTML = str;
       break;
     case 1:
-      elemTableBox.style = 'display: block';
+      elemTable.style = 'display: block';
       elemList.style = 'display: none';
-      elemCardBox.style = 'display: none';
+      elemCard.style = 'display: none';
       const rowStartIndex = index * dataSize + 1;
       pageArr[index].forEach((item, i) => {
         str += `<tr class="table__ls ${changeBgColor(i)}">
@@ -152,12 +152,12 @@ function setTemplate(index, type) {
                   </td>
                 </tr>`;
       });
-      elemTable.innerHTML = str;
+      elemTableIn.innerHTML = str;
       break;
     default:
-      elemCardBox.style = 'display: block';
+      elemCard.style = 'display: block';
       elemList.style = 'display: none';
-      elemTableBox.style = 'display: none';
+      elemTable.style = 'display: none';
       pageArr[index].forEach(item => {
         str += `<div class="card__sec">
               ${item.Url ? `<a class="card__link" href="${item.Url}" target="_blank">` : ''}
@@ -181,7 +181,7 @@ function setTemplate(index, type) {
               ${item.Url ? `</a>` : ''}
             </div>`
       });
-      elemCard.innerHTML = str;
+      elemCardIn.innerHTML = str;
       break;
   }
   elemPageNum.textContent = `美食頁次 ${index + 1}/14`;
