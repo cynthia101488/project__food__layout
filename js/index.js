@@ -6,13 +6,17 @@ const elemLoad = document.querySelector('#Load');
 let pageArr = [];
 let cityArr = [];
 let placeList = [];
-let currentIndex = 0;
-let currentCity = -1;
-let currentTown = '';
-let mode = 0;
-let renderList = false;
-let renderTable = false;
-let renderCard = false;
+let currentObj = {
+  currentIndex: 0,
+  currentCity: -1,
+  currentTown: ''
+};
+let renderObj = {
+  mode: 0,
+  renderList: false,
+  renderTable: false,
+  renderCard: false
+};
 const dataSize = 10;
 
 getData();
@@ -26,7 +30,7 @@ function getData() {
       pageSplit(data);
       dataFilter(data);
       cityArr = dataSplit(data);
-      setTemplate(currentIndex, mode);
+      setTemplate(currentObj.currentIndex, renderObj.mode);
     })
     .catch(err => {
       if (err) {
@@ -43,17 +47,17 @@ function pageSplit(data) {
   for (let i = 0, len = data.length; i < len; i += dataSize) {
     pageArr.push(data.slice(i, i + dataSize));
   }
-  setPage(pageArr);
+  setPage(pageArr.length);
 }
 
-function setPage(arr) {
-  currentIndex = 0;
+function setPage(len) {
+  currentObj.currentIndex = 0;
   let str = '';
-  arr.forEach((item, index) => {
-    str += `<button class="page__btn" type="button" data-id="${index}">${index + 1}</button>`;
-  });
+  for (let i = 0; i < len; i++) {
+    str += `<button class="page__btn" type="button" data-id="${i}">${i + 1}</button>`;
+  }
   elemPage.innerHTML = str;
-  elemPage.children[currentIndex].classList.add('js-page__btn');
+  elemPage.children[currentObj.currentIndex].classList.add('js-page__btn');
 }
 
 function dataFilter(data) {
@@ -64,7 +68,7 @@ function dataFilter(data) {
 
 function getZone(data) {
   const arr = data.map(item => {
-    if (currentCity < 0) {
+    if (currentObj.currentCity < 0) {
       return item.City;
     } else {
       return item.Town;
@@ -78,7 +82,7 @@ function setSelectList(arr) {
   arr.forEach((item, index) => {
     str += `<option class="nav__item" value="${item}" data-id="${index}">${item}</option>`
   });
-  if (currentCity < 0) {
+  if (currentObj.currentCity < 0) {
     elemCityList.innerHTML += str;
   } else {
     elemTownList.innerHTML = `<option class="nav__item" value="allTown" selected disabled>請選擇鄉鎮區...</option>` + str;
@@ -111,7 +115,7 @@ function setTemplate(index, type) {
       elemList.style = 'display: block';
       elemTable.style = 'display: none';
       elemCard.style = 'display: none';
-      if (!renderList) {
+      if (!renderObj.renderList) {
         pageArr[index].forEach(item => {
           str += `<div class="list__sec">
                   ${item.Url ? `<a class="list__link" href="${item.Url}" target="_blank">` : ''}
@@ -136,14 +140,14 @@ function setTemplate(index, type) {
                 </div>`
         });
         elemList.innerHTML = str;
-        renderList = true;
+        renderObj.renderList = true;
       }
       break;
     case 1:
       elemTable.style = 'display: block';
       elemList.style = 'display: none';
       elemCard.style = 'display: none';
-      if (!renderTable) {
+      if (!renderObj.renderTable) {
         const rowStartIndex = index * dataSize + 1;
         pageArr[index].forEach((item, i) => {
           str += `<tr class="table__ls ${changeBgColor(i)}">
@@ -160,14 +164,14 @@ function setTemplate(index, type) {
                 </tr>`;
         });
         elemTableIn.innerHTML = str;
-        renderTable = true;
+        renderObj.renderTable = true;
       }
       break;
     default:
       elemCard.style = 'display: block';
       elemList.style = 'display: none';
       elemTable.style = 'display: none';
-      if (!renderCard) {
+      if (!renderObj.renderCard) {
         pageArr[index].forEach(item => {
           str += `<div class="card__sec">
               ${item.Url ? `<a class="card__link" href="${item.Url}" target="_blank">` : ''}
@@ -192,7 +196,7 @@ function setTemplate(index, type) {
             </div>`
         });
         elemCardIn.innerHTML = str;
-        renderCard = true;
+        renderObj.renderCard = true;
       }
       break;
   }
@@ -222,9 +226,9 @@ function setEvent() {
 function changeMode(e) {
   const self = e.target;
   if (self.nodeName === 'I') {
-    const prevMode = mode;
-    mode = parseInt(self.dataset.id);
-    setTemplate(currentIndex, mode);
+    const prevMode = renderObj.mode;
+    renderObj.mode = parseInt(self.dataset.id);
+    setTemplate(currentObj.currentIndex, renderObj.mode);
     setModeBtn(prevMode);
   }
 }
@@ -232,47 +236,47 @@ function changeMode(e) {
 function changePage(e) {
   const self = e.target;
   if (self.nodeName === 'BUTTON') {
-    const prevIndex = currentIndex;
-    currentIndex = parseInt(self.dataset.id);
+    const prevIndex = currentObj.currentIndex;
+    currentObj.currentIndex = parseInt(self.dataset.id);
     renderStateChange();
-    setTemplate(currentIndex, mode);
+    setTemplate(currentObj.currentIndex, renderObj.mode);
     setPageBtn(prevIndex);
   }
 }
 
 function changeCity() {
-  currentCity = elemCityList.selectedIndex - 1;
-  pageSplit(cityArr[currentCity]);
+  currentObj.currentCity = elemCityList.selectedIndex - 1;
+  pageSplit(cityArr[currentObj.currentCity]);
   renderStateChange();
-  setTemplate(currentIndex, mode);
-  dataFilter(cityArr[currentCity]);
+  setTemplate(currentObj.currentIndex, renderObj.mode);
+  dataFilter(cityArr[currentObj.currentCity]);
 }
 
 function changeTown() {
-  currentTown = elemTownList.value;
+  currentObj.currentTown = elemTownList.value;
   let arr = [];
-  cityArr[currentCity].forEach(item => {
-    if (item.Town === currentTown) {
+  cityArr[currentObj.currentCity].forEach(item => {
+    if (item.Town === currentObj.currentTown) {
       arr.push(item);
     }
   });
   pageSplit(arr);
   renderStateChange();
-  setTemplate(currentIndex, mode);
+  setTemplate(currentObj.currentIndex, renderObj.mode);
 }
 
 function setModeBtn(index) {
-  elemMode.children[mode].classList.add('js-nav__btn');
+  elemMode.children[renderObj.mode].classList.add('js-nav__btn');
   elemMode.children[index].classList.remove('js-nav__btn');
 }
 
 function setPageBtn(index) {
-  elemPage.children[currentIndex].classList.add('js-page__btn');
+  elemPage.children[currentObj.currentIndex].classList.add('js-page__btn');
   elemPage.children[index].classList.remove('js-page__btn');
 }
 
 function renderStateChange() {
-  renderList = false;
-  renderTable = false;
-  renderCard = false;
+  renderObj.renderList = false;
+  renderObj.renderTable = false;
+  renderObj.renderCard = false;
 }
